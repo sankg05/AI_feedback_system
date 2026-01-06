@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Feedback</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+    <body>
+        <div class="container">
+            <h2>Submit Your Feedback</h2>
+
+            <label>Rating (1–5)</label>
+            <input type="number" id="rating" min="1" max="5">
+
+            <br><br>
+
+            <textarea id="review" placeholder="Write your review here..."></textarea>
+
+            <button onclick="submitReview()">Submit</button>
+
+            <p id="status"></p>
+
+            <h3>AI Response</h3>
+            <p id="ai-response"></p>
+        </div>
+
+        <script src="/static/js/user.js"></script>
+    </body>
+</html>

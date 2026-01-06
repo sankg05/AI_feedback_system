@@ -1,5 +1,5 @@
 import os
-from flask import request, jsonify
+from flask import request, jsonify, render_template
 from app import app
 from app.db import SessionLocal
 from app.models import Review
@@ -16,6 +16,14 @@ def serialize_review(review):
         "error_message": review.error_message,
         "created_at": review.created_at.isoformat()
     }
+
+@app.route("/")
+def user_dashboard():
+    return render_template("user.html")
+
+@app.route("/admin")
+def admin_dashboard():
+    return render_template("admin.html")
 
 @app.route("/health", methods=["GET"])
 def health():
