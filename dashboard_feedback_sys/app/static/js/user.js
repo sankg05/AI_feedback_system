@@ -24,8 +24,7 @@ async function submitReview() {
         }
 
         document.getElementById("status").innerText = "Submitted successfully!";
-        document.getElementById("ai-response").innerText =
-            "Thank you! Your feedback has been processed.";
+        document.getElementById("ai-response").innerText = data.ai_response;
 
     } catch (err) {
         document.getElementById("status").innerText = err.message;

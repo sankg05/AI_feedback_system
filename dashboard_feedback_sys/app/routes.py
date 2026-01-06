@@ -3,6 +3,7 @@ from flask import request, jsonify, render_template
 from app import app
 from app.db import SessionLocal
 from app.models import Review
+from app.llm import process_review_with_gemini
 
 def serialize_review(review):
     return {
@@ -39,19 +40,35 @@ def submit_review():
     if not rating or rating < 1 or rating > 5:
         return jsonify({"error": "Invalid rating"}), 400
 
+    llm_result = process_review_with_gemini(rating, review_text)
+
     db = SessionLocal()
     try:
         review = Review(
             rating=rating,
-            review_text=review_text
+            review_text=review_text,
+            ai_user_response=llm_result["user_response"],
+            ai_summary=llm_result["summary"],
+            ai_recommended_actions=llm_result["recommended_actions"],
+            status=llm_result["status"],
+            error_message=llm_result["error"]
         )
+
         db.add(review)
         db.commit()
         db.refresh(review)
+
+    except Exception as e:
+        db.rollback()
+        return jsonify({"error": "Failed to store review"}), 500
+
     finally:
         db.close()
 
-    return jsonify({"success": True, "review_id": review.id})
+    return jsonify({
+        "success": True,
+        "ai_response": llm_result["user_response"]
+    })
 
 @app.route("/api/admin/reviews", methods=["GET"])
 def fetch_all_reviews():
